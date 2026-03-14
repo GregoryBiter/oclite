@@ -1,0 +1,14 @@
+{
+  "name": "oclite/system",
+  "description": "Read-only copy of OpenCart system core (engine, library, helpers)",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Oclite\\System\\": "src/"
+    },
+    "classmap": ["."]
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

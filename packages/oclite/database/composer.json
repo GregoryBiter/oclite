@@ -1,0 +1,16 @@
+{
+  "name": "oclite/database",
+  "description": "Database migration, seeder and factory layer for OCLite with Artisan-style CLI commands",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.1",
+    "oclite/console": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Oclite\\Database\\": "src/"
+    }
+  },
+  "minimum-stability": "stable"
+}
