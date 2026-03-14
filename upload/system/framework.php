@@ -5,10 +5,24 @@ $autoloader->register('Opencart\\' . APPLICATION, DIR_APPLICATION);
 $autoloader->register('Opencart\Extension', DIR_EXTENSION);
 $autoloader->register('Opencart\System', DIR_SYSTEM);
 
-//require_once(DIR_SYSTEM . 'helper/vendor.php');
-//oc_generate_vendor();
+// Ensure vendor autoload file exists. If missing, try to generate it from
+// available vendor packages metadata.
+if (!is_file(DIR_SYSTEM . 'vendor.php')) {
+	if (is_file(DIR_SYSTEM . 'helper/vendor.php')) {
+		require_once(DIR_SYSTEM . 'helper/vendor.php');
 
-require_once(DIR_SYSTEM . 'vendor.php');
+		try {
+			oc_generate_vendor();
+		} catch (\Throwable $e) {
+			// Generation failed — proceed without vendor.php. Errors will be
+			// surfaced later if classes are missing.
+		}
+	}
+}
+
+if (is_file(DIR_SYSTEM . 'vendor.php')) {
+	require_once(DIR_SYSTEM . 'vendor.php');
+}
 
 // Registry
 $registry = new \Opencart\System\Engine\Registry();
