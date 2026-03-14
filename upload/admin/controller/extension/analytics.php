@@ -24,7 +24,7 @@ class Analytics extends \Opencart\System\Engine\Controller {
 		$this->load->language('extension/analytics');
 
 		// Promotion
-		$data['promotion'] = $this->load->controller('marketplace/promotion');
+		//$data['promotion'] = $this->load->controller('marketplace/promotion');
 
 		$available = [];
 

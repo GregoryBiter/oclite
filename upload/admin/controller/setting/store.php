@@ -322,17 +322,6 @@ class Store extends \Opencart\System\Engine\Controller {
 			$data['config_language_catalog'] = $this->config->get('config_language_catalog');
 		}
 
-		// Currency
-		$this->load->model('localisation/currency');
-
-		$data['currencies'] = $this->model_localisation_currency->getCurrencies();
-
-		if (isset($setting_info['config_currency'])) {
-			$data['config_currency'] = $setting_info['config_currency'];
-		} else {
-			$data['config_currency'] = $this->config->get('config_currency');
-		}
-
 		// Options
 		if (isset($setting_info['config_product_description_length'])) {
 			$data['config_product_description_length'] = $setting_info['config_product_description_length'];

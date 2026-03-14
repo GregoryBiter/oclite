@@ -239,72 +239,10 @@ class Language extends \Opencart\System\Engine\Model {
 
 		$this->model_catalog_download->deleteDescriptionsByLanguageId($language_id);
 
-		// Filter
-		$this->load->model('catalog/filter');
-
-		$this->model_catalog_filter->deleteDescriptionsByLanguageId($language_id);
-
-		// Filter Group
-		$this->load->model('catalog/filter_group');
-
-		$this->model_catalog_filter_group->deleteDescriptionsByLanguageId($language_id);
-
 		// Information
 		$this->load->model('catalog/information');
 
 		$this->model_catalog_information->deleteDescriptionsByLanguageId($language_id);
-
-		// Length Class
-		$this->load->model('localisation/length_class');
-
-		$this->model_localisation_length_class->deleteDescriptionsByLanguageId($language_id);
-
-		// Option
-		$this->load->model('catalog/option');
-
-		$this->model_catalog_option->deleteDescriptionsByLanguageId($language_id);
-		$this->model_catalog_option->deleteValueDescriptionsByLanguageId($language_id);
-
-		// Order Status
-		$this->load->model('localisation/order_status');
-
-		$this->model_localisation_order_status->deleteOrderStatusesByLanguageId($language_id);
-
-		// Product
-		$this->load->model('catalog/product');
-
-		$this->model_catalog_product->deleteDescriptionsByLanguageId($language_id);
-		$this->model_catalog_product->deleteAttributesByLanguageId($language_id);
-
-		// Return Action
-		$this->load->model('localisation/return_action');
-
-		$this->model_localisation_return_action->deleteReturnActionsByLanguageId($language_id);
-
-		// Return Reason
-		$this->load->model('localisation/return_reason');
-
-		$this->model_localisation_return_reason->deleteReturnReasonsByLanguageId($language_id);
-
-		// Return Status
-		$this->load->model('localisation/return_status');
-
-		$this->model_localisation_return_status->deleteReturnStatusesByLanguageId($language_id);
-
-		// Stock Status
-		$this->load->model('localisation/stock_status');
-
-		$this->model_localisation_stock_status->deleteStockStatusesByLanguageId($language_id);
-
-		// Weight Class
-		$this->load->model('localisation/weight_class');
-
-		$this->model_localisation_weight_class->deleteDescriptionsByLanguageId($language_id);
-
-		// Subscription Status
-		$this->load->model('localisation/subscription_status');
-
-		$this->model_localisation_subscription_status->deleteStockStatusesByLanguageId($language_id);
 
 		// SEO
 		$this->load->model('design/seo_url');
@@ -317,11 +255,6 @@ class Language extends \Opencart\System\Engine\Model {
 		$this->load->model('cms/topic');
 
 		$this->model_cms_topic->deleteDescriptionsByLanguageId($language_id);
-
-		// Zone
-		$this->load->model('localisation/zone');
-
-		$this->model_localisation_zone->deleteDescriptionsByLanguageId($language_id);
 	}
 
 	/**

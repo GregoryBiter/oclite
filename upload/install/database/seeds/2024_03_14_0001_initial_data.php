@@ -1,5 +1,5 @@
 <?php
-use Opencart\Install\Model\Upgrade\Seeder;
+use Oclite\Database\Seeder;
 
 /**
  * Minimal CMS seed data — no store/product/customer/order functionality.
@@ -7,7 +7,7 @@ use Opencart\Install\Model\Upgrade\Seeder;
 class S202403140001InitialData extends Seeder {
 
     public function run(): void {
-        $p = DB_PREFIX;
+        $p = $this->prefix;
 
         // ------------------------------------------------------------------ //
         // Language                                                            //

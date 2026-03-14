@@ -190,14 +190,6 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
-			if ($this->user->hasPermission('access', 'design/banner')) {
-				$design[] = [
-					'name'     => $this->language->get('text_banner'),
-					'href'     => $this->url->link('design/banner', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
-
 			if ($this->user->hasPermission('access', 'design/seo_url')) {
 				$design[] = [
 					'name'     => $this->language->get('text_seo_url'),
@@ -317,14 +309,6 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 			// Localisation
 			$localisation = [];
 
-			if ($this->user->hasPermission('access', 'localisation/location')) {
-				$localisation[] = [
-					'name'     => $this->language->get('text_location'),
-					'href'     => $this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
-
 			if ($this->user->hasPermission('access', 'localisation/language')) {
 				$localisation[] = [
 					'name'     => $this->language->get('text_language'),
@@ -333,34 +317,10 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
-			if ($this->user->hasPermission('access', 'localisation/currency')) {
-				$localisation[] = [
-					'name'     => $this->language->get('text_currency'),
-					'href'     => $this->url->link('localisation/currency', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
-
 			if ($this->user->hasPermission('access', 'localisation/stock_status')) {
 				$localisation[] = [
 					'name'     => $this->language->get('text_stock_status'),
 					'href'     => $this->url->link('localisation/stock_status', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
-
-			if ($this->user->hasPermission('access', 'localisation/order_status')) {
-				$localisation[] = [
-					'name'     => $this->language->get('text_order_status'),
-					'href'     => $this->url->link('localisation/order_status', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
-
-			if ($this->user->hasPermission('access', 'localisation/subscription_status')) {
-				$localisation[] = [
-					'name'     => $this->language->get('text_subscription_status'),
-					'href'     => $this->url->link('localisation/subscription_status', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
 			}

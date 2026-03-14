@@ -296,99 +296,38 @@ class CliInstall extends \Opencart\System\Engine\Controller {
 			return 'Error: Could not make a database link using ' . $db_username . '@' . $db_hostname . '!' . "\n";
 		}
 
-		// Set up Database structure
-		$tables = oc_db_schema();
+		// Use migration system instead of legacy db_schema + SQL file
+		require_once(DIR_INSTALL . 'controller/upgrade/migrate.php');
+		$migrate = new \Opencart\Install\Controller\Upgrade\Migrate($this->registry);
+		// Create/update tables
+		$migrate->fresh();
+		// Run seeders for initial data
+		$migrate->seed();
 
-		foreach ($tables as $table) {
-			$table_query = $db->query("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '" . $db_database . "' AND TABLE_NAME = '" . $db_prefix . $table['name'] . "'");
+		// Ensure character set and SQL mode
+		$db->query("SET CHARACTER SET utf8mb4");
 
-			if ($table_query->num_rows) {
-				$db->query("DROP TABLE `" . $db_prefix . $table['name'] . "`");
-			}
+		$db->query("SET @@session.sql_mode = ''");
 
-			$sql = "CREATE TABLE `" . $db_prefix . $table['name'] . "` (" . "\n";
+		// Create admin user (using provided credentials)
+		$db->query("DELETE FROM `" . $db_prefix . "user` WHERE `user_id` = '1'");
+		$db->query("INSERT INTO `" . $db_prefix . "user` SET `user_id` = '1', `user_group_id` = '1', `username` = '" . $db->escape($option['username']) . "', `password` = '" . $db->escape(password_hash(html_entity_decode($option['password'], ENT_QUOTES, 'UTF-8'), PASSWORD_DEFAULT)) . "', `firstname` = 'John', `lastname` = 'Doe', `email` = '" . $db->escape($option['email']) . "', `status` = '1', `date_added` = NOW()");
 
-			foreach ($table['field'] as $field) {
-				$sql .= "  `" . $field['name'] . "` " . $field['type'] . (!empty($field['not_null']) ? " NOT NULL" : "") . (isset($field['default']) ? " DEFAULT '" . $db->escape($field['default']) . "'" : "") . (!empty($field['auto_increment']) ? " AUTO_INCREMENT" : "") . ",\n";
-			}
+		$db->query("DELETE FROM `" . $db_prefix . "setting` WHERE `key` = 'config_email'");
+		$db->query("INSERT INTO `" . $db_prefix . "setting` SET `code` = 'config', `key` = 'config_email', `value` = '" . $db->escape($option['email']) . "'");
 
-			if (isset($table['primary'])) {
-				$primary_data = [];
+		$db->query("DELETE FROM `" . $db_prefix . "setting` WHERE `key` = 'config_encryption'");
+		$db->query("INSERT INTO `" . $db_prefix . "setting` SET `code` = 'config', `key` = 'config_encryption', `value` = '" . $db->escape(oc_token(1024)) . "'");
 
-				foreach ($table['primary'] as $primary) {
-					$primary_data[] = "`" . $primary . "`";
-				}
+		$db->query("INSERT INTO `" . $db_prefix . "api` SET `username` = 'Default', `key` = '" . $db->escape(oc_token(256)) . "', `status` = 1, `date_added` = NOW(), `date_modified` = NOW()");
 
-				$sql .= "  PRIMARY KEY (" . implode(",", $primary_data) . "),\n";
-			}
+		$last_id = $db->getLastId();
 
-			if (isset($table['index'])) {
-				foreach ($table['index'] as $index) {
-					$index_data = [];
+		$db->query("DELETE FROM `" . $db_prefix . "setting` WHERE `key` = 'config_api_id'");
+		$db->query("INSERT INTO `" . $db_prefix . "setting` SET `code` = 'config', `key` = 'config_api_id', `value` = '" . (int)$last_id . "'");
 
-					foreach ($index['key'] as $key) {
-						$index_data[] = "`" . $key . "`";
-					}
-
-					$sql .= "  KEY `" . $index['name'] . "` (" . implode(",", $index_data) . "),\n";
-				}
-			}
-
-			$sql = rtrim($sql, ",\n") . "\n";
-			$sql .= ") ENGINE=" . $table['engine'] . " CHARSET=" . $table['charset'] . " COLLATE=" . $table['collate'] . ";\n";
-
-			$db->query($sql);
-		}
-
-		// Setup database data
-		$lines = file($file, FILE_IGNORE_NEW_LINES);
-
-		if ($lines) {
-			$sql = '';
-
-			$start = false;
-
-			foreach ($lines as $line) {
-				if (substr($line, 0, 12) == 'INSERT INTO ') {
-					$sql = '';
-
-					$start = true;
-				}
-
-				if ($start) {
-					$sql .= $line;
-				}
-
-				if (substr($line, -2) == ');') {
-					$db->query(str_replace("INSERT INTO `oc_", "INSERT INTO `" . $db_prefix, $sql));
-
-					$start = false;
-				}
-			}
-
-			$db->query("SET CHARACTER SET utf8mb4");
-
-			$db->query("SET @@session.sql_mode = ''");
-
-			$db->query("DELETE FROM `" . $db_prefix . "user` WHERE `user_id` = '1'");
-			$db->query("INSERT INTO `" . $db_prefix . "user` SET `user_id` = '1', `user_group_id` = '1', `username` = '" . $db->escape($option['username']) . "', `password` = '" . $db->escape(password_hash(html_entity_decode($option['password'], ENT_QUOTES, 'UTF-8'), PASSWORD_DEFAULT)) . "', `firstname` = 'John', `lastname` = 'Doe', `email` = '" . $db->escape($option['email']) . "', `status` = '1', `date_added` = NOW()");
-
-			$db->query("DELETE FROM `" . $db_prefix . "setting` WHERE `key` = 'config_email'");
-			$db->query("INSERT INTO `" . $db_prefix . "setting` SET `code` = 'config', `key` = 'config_email', `value` = '" . $db->escape($option['email']) . "'");
-
-			$db->query("DELETE FROM `" . $db_prefix . "setting` WHERE `key` = 'config_encryption'");
-			$db->query("INSERT INTO `" . $db_prefix . "setting` SET `code` = 'config', `key` = 'config_encryption', `value` = '" . $db->escape(oc_token(1024)) . "'");
-
-			$db->query("INSERT INTO `" . $db_prefix . "api` SET `username` = 'Default', `key` = '" . $db->escape(oc_token(256)) . "', `status` = 1, `date_added` = NOW(), `date_modified` = NOW()");
-
-			$last_id = $db->getLastId();
-
-			$db->query("DELETE FROM `" . $db_prefix . "setting` WHERE `key` = 'config_api_id'");
-			$db->query("INSERT INTO `" . $db_prefix . "setting` SET `code` = 'config', `key` = 'config_api_id', `value` = '" . (int)$last_id . "'");
-
-			// Set the current years prefix
-			$db->query("UPDATE `" . $db_prefix . "setting` SET `value` = 'INV-" . date('Y') . "-00' WHERE `key` = 'config_invoice_prefix'");
-		}
+		// Set the current years prefix
+		$db->query("UPDATE `" . $db_prefix . "setting` SET `value` = 'INV-" . date('Y') . "-00' WHERE `key` = 'config_invoice_prefix'");
 
 		// Write config files
 		$output = '<?php' . "\n";

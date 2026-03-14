@@ -92,7 +92,7 @@ class Theme extends \Opencart\System\Engine\Controller {
 			}
 		}
 
-		$data['promotion'] = $this->load->controller('marketplace/promotion');
+		//$data['promotion'] = $this->load->controller('marketplace/promotion');
 
 		return $this->load->view('extension/theme', $data);
 	}

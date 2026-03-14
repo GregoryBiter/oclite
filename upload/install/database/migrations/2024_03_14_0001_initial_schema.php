@@ -1,5 +1,5 @@
 <?php
-use Opencart\Install\Model\Upgrade\Migration;
+use Oclite\Database\Migration;
 
 /**
  * CMS-only schema migration.
@@ -11,7 +11,7 @@ class M202403140001InitialSchema extends Migration {
     private string $p;
 
     public function up(): void {
-        $this->p = DB_PREFIX;
+        $this->p = $this->prefix;
         $p = $this->p;
 
         // ------------------------------------------------------------------ //
@@ -260,6 +260,36 @@ class M202403140001InitialSchema extends Migration {
           `code` varchar(255) NOT NULL DEFAULT '',
           `date_added` datetime NOT NULL,
           PRIMARY KEY (`upload_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+        // ------------------------------------------------------------------ //
+        // Downloads                                                           //
+        // ------------------------------------------------------------------ //
+
+        $this->db->query("CREATE TABLE IF NOT EXISTS `{$p}download` (
+          `download_id` int(11) NOT NULL AUTO_INCREMENT,
+          `filename` varchar(255) NOT NULL DEFAULT '',
+          `mask` varchar(128) NOT NULL DEFAULT '',
+          `date_added` datetime NOT NULL,
+          PRIMARY KEY (`download_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+        $this->db->query("CREATE TABLE IF NOT EXISTS `{$p}download_description` (
+          `download_id` int(11) NOT NULL,
+          `language_id` int(11) NOT NULL,
+          `name` varchar(64) NOT NULL DEFAULT '',
+          PRIMARY KEY (`download_id`, `language_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+        $this->db->query("CREATE TABLE IF NOT EXISTS `{$p}download_report` (
+          `download_report_id` int(11) NOT NULL AUTO_INCREMENT,
+          `download_id` int(11) NOT NULL,
+          `ip` varchar(40) NOT NULL DEFAULT '',
+          `store_id` int(11) NOT NULL DEFAULT 0,
+          `country` varchar(128) NOT NULL DEFAULT '',
+          `date_added` datetime NOT NULL,
+          PRIMARY KEY (`download_report_id`),
+          KEY `download_id` (`download_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
         $this->db->query("CREATE TABLE IF NOT EXISTS `{$p}identifier` (
@@ -518,7 +548,7 @@ class M202403140001InitialSchema extends Migration {
     }
 
     public function down(): void {
-        $p = DB_PREFIX;
+        $p = $this->prefix;
         $tables = [
             'article_to_store', 'article_to_layout', 'article_rating',
             'article_comment', 'article_description', 'article',

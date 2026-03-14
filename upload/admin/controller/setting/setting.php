@@ -99,9 +99,7 @@ class Setting extends \Opencart\System\Engine\Controller {
 		$data['config_location'] = (array)$this->config->get('config_location');
 
 		// Country
-		$this->load->model('localisation/country');
-
-		$data['countries'] = $this->model_localisation_country->getCountries();
+		// Country list removed for CMS-only build — keep config values only
 
 		$data['config_country_id'] = $this->config->get('config_country_id');
 		$data['config_zone_id'] = $this->config->get('config_zone_id');
@@ -132,15 +130,6 @@ class Setting extends \Opencart\System\Engine\Controller {
 		$data['config_language_catalog'] = $this->config->get('config_language_catalog');
 		$data['config_language_admin'] = $this->config->get('config_language_admin');
 
-		// Currency
-		$this->load->model('localisation/currency');
-
-		$data['currencies'] = $this->model_localisation_currency->getCurrencies();
-
-		$data['config_currency'] = $this->config->get('config_currency');
-
-		$data['currency_engines'] = [];
-
 		// Extension
 		$this->load->model('setting/extension');
 
@@ -160,20 +149,6 @@ class Setting extends \Opencart\System\Engine\Controller {
 		$data['config_currency_engine'] = $this->config->get('config_currency_engine');
 		$data['config_currency_auto'] = $this->config->get('config_currency_auto');
 
-		// Length Class
-		$this->load->model('localisation/length_class');
-
-		$data['length_classes'] = $this->model_localisation_length_class->getLengthClasses();
-
-		$data['config_length_class_id'] = $this->config->get('config_length_class_id');
-
-		// Weight Class
-		$this->load->model('localisation/weight_class');
-
-		$data['weight_classes'] = $this->model_localisation_weight_class->getWeightClasses();
-
-		$data['config_weight_class_id'] = $this->config->get('config_weight_class_id');
-
 		// Options
 		$data['config_product_description_length'] = $this->config->get('config_product_description_length');
 		$data['config_pagination'] = $this->config->get('config_pagination');
@@ -181,11 +156,6 @@ class Setting extends \Opencart\System\Engine\Controller {
 		$data['config_pagination_admin'] = $this->config->get('config_pagination_admin');
 		$data['config_autocomplete_limit'] = $this->config->get('config_autocomplete_limit');
 		$data['config_product_report_status'] = $this->config->get('config_product_report_status');
-
-		// Review
-		$data['config_review_status'] = $this->config->get('config_review_status');
-		$data['config_review_purchased'] = $this->config->get('config_review_purchased');
-		$data['config_review_guest'] = $this->config->get('config_review_guest');
 
 		// CMS
 		$data['config_article_description_length'] = $this->config->get('config_article_description_length');
@@ -198,11 +168,6 @@ class Setting extends \Opencart\System\Engine\Controller {
 		$data['config_gdpr_id'] = $this->config->get('config_gdpr_id');
 		$data['config_gdpr_limit'] = $this->config->get('config_gdpr_limit');
 
-		// Tax
-		$data['config_tax'] = $this->config->get('config_tax');
-		$data['config_tax_default'] = $this->config->get('config_tax_default');
-		$data['config_tax_customer'] = $this->config->get('config_tax_customer');
-
 		// Customer
 		$data['config_customer_online'] = $this->config->get('config_customer_online');
 		$data['config_customer_online_expire'] = $this->config->get('config_customer_online_expire');
@@ -210,9 +175,8 @@ class Setting extends \Opencart\System\Engine\Controller {
 		$data['config_customer_search'] = $this->config->get('config_customer_search');
 
 		// Customer Group
-		$this->load->model('customer/customer_group');
-
-		$data['customer_groups'] = $this->model_customer_customer_group->getCustomerGroups();
+		// Customer groups table is not present in CMS-only build — provide empty list
+		$data['customer_groups'] = [];
 
 		$data['config_customer_group_id'] = $this->config->get('config_customer_group_id');
 		$data['config_customer_group_display'] = (array)$this->config->get('config_customer_group_display');
@@ -247,47 +211,12 @@ class Setting extends \Opencart\System\Engine\Controller {
 			$data['config_invoice_prefix'] = 'INV-' . date('Y') . '-00';
 		}
 
-		// Order Status
-		$this->load->model('localisation/order_status');
-
-		$data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
-
-		$data['config_order_status_id'] = $this->config->get('config_order_status_id');
-		$data['config_processing_status'] = (array)$this->config->get('config_processing_status');
-		$data['config_complete_status'] = (array)$this->config->get('config_complete_status');
-		$data['config_failed_status_id'] = $this->config->get('config_failed_status_id');
-		$data['config_void_status_id'] = $this->config->get('config_void_status_id');
-		$data['config_fraud_status_id'] = $this->config->get('config_fraud_status_id');
-
-		// Subscription Status
-		$this->load->model('localisation/subscription_status');
-
-		$data['subscription_statuses'] = $this->model_localisation_subscription_status->getSubscriptionStatuses();
-
-		$data['config_subscription_status_id'] = $this->config->get('config_subscription_status_id');
-		$data['config_subscription_active_status_id'] = $this->config->get('config_subscription_active_status_id');
-		$data['config_subscription_suspended_status_id'] = $this->config->get('config_subscription_suspended_status_id');
-		$data['config_subscription_expired_status_id'] = $this->config->get('config_subscription_expired_status_id');
-		$data['config_subscription_canceled_status_id'] = $this->config->get('config_subscription_canceled_status_id');
-		$data['config_subscription_failed_status_id'] = $this->config->get('config_subscription_failed_status_id');
-		$data['config_subscription_denied_status_id'] = $this->config->get('config_subscription_denied_status_id');
-
 		// Api
 		$this->load->model('user/api');
 
 		$data['apis'] = $this->model_user_api->getApis();
 
 		$data['config_api_id'] = $this->config->get('config_api_id');
-
-		// Stock Status
-		$this->load->model('localisation/stock_status');
-
-		$data['stock_statuses'] = $this->model_localisation_stock_status->getStockStatuses();
-
-		$data['config_stock_status_id'] = $this->config->get('config_stock_status_id');
-		$data['config_stock_display'] = $this->config->get('config_stock_display');
-		$data['config_stock_warning'] = $this->config->get('config_stock_warning');
-		$data['config_stock_checkout'] = $this->config->get('config_stock_checkout');
 
 		// Affiliate
 		$data['config_affiliate_status'] = $this->config->get('config_affiliate_status');
@@ -299,19 +228,6 @@ class Setting extends \Opencart\System\Engine\Controller {
 
 		// Affiliate terms
 		$data['config_affiliate_id'] = $this->config->get('config_affiliate_id');
-
-		// Return Status
-		$this->load->model('localisation/return_status');
-
-		$data['return_statuses'] = $this->model_localisation_return_status->getReturnStatuses();
-
-		$data['config_return_status_id'] = $this->config->get('config_return_status_id');
-
-		// Return terms
-		$data['config_return_id'] = $this->config->get('config_return_id');
-
-		// Captcha
-		$data['config_captcha'] = $this->config->get('config_captcha');
 
 		// Extension
 		$this->load->model('setting/extension');
