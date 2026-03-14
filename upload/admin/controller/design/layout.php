@@ -374,18 +374,6 @@ class Layout extends \Opencart\System\Engine\Controller {
 			$json['error'] = $this->language->get('error_permission');
 		}
 
-		// Product
-		$this->load->model('catalog/product');
-
-		// Category
-		$this->load->model('catalog/category');
-
-		// Manufacturer
-		$this->load->model('catalog/manufacturer');
-
-		// Information
-		$this->load->model('catalog/information');
-
 		// Article
 		$this->load->model('cms/article');
 
@@ -395,24 +383,6 @@ class Layout extends \Opencart\System\Engine\Controller {
 		foreach ($selected as $layout_id) {
 			if ($this->config->get('config_layout_id') == $layout_id) {
 				$json['error'] = $this->language->get('error_default');
-			}
-
-			$product_total = $this->model_catalog_product->getTotalLayoutsByLayoutId($layout_id);
-
-			if ($product_total) {
-				$json['error'] = sprintf($this->language->get('error_product'), $product_total);
-			}
-
-			$category_total = $this->model_catalog_category->getTotalLayoutsByLayoutId($layout_id);
-
-			if ($category_total) {
-				$json['error'] = sprintf($this->language->get('error_category'), $category_total);
-			}
-
-			$manufacturer_total = $this->model_catalog_manufacturer->getTotalLayoutsByLayoutId($layout_id);
-
-			if ($manufacturer_total) {
-				$json['error'] = sprintf($this->language->get('error_manufacturer'), $manufacturer_total);
 			}
 
 			$information_total = $this->model_catalog_information->getTotalLayoutsByLayoutId($layout_id);
